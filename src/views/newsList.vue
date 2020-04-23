@@ -3,7 +3,11 @@
         <!-- 新闻列表 -->
         <div class="news-list">
             <div class="news-list-title flex">
-                <text class="f28 fw5 c0">{{i18n.new}}</text>
+                <div class="title">
+                    <span class="line" v-bind:style="{'background-color': themeColor}"></span>
+                    <text class="c0 f30">{{i18n.new}}</text>
+                </div>
+                <!-- <text class="f24 c153 fw4 pl20 pt10 pb10" @click='newsMoreEvent()'>{{i18n.All}}</text> -->
             </div>
             <div v-if='isShow'>
                 <div class="new-list-content" v-if='newsList.length != 0'>
@@ -52,9 +56,34 @@ export default {
             i18n: "",
             isShow: false,
             isError: true,
+            themeColor: ''
         };
     },
+    created() {
+        this.$fixViewport();
+        linkapi.getLanguage(res => {
+            this.i18n = this.$window[res];
+        });
+        linkapi.getThemeColor(res => {
+            this.themeColor = res.background_color;
+        })
+    },
+    mounted() {
+        var that = this
+        this.channel.onmessage = event => {
+            if (event.data.action === "RefreshData") {
+                this.getNewsData();
+            }
+        };
+        this.getStorage(function () {
+            that.getNewsData()
+        })
+    },
     methods: {
+        newsMoreEvent(){
+            // 打开应用的方式
+            link.launchLinkService(["[OpenApp] \n appCode=bingo_newsList"], (res) => { }, (err) => { });
+        },
         // 新闻列表
         newsListItemEvent(url) {
             if (url) {
@@ -214,23 +243,6 @@ export default {
                 this.getComponentRect(_params)
             }, 1200)
         }
-    },
-    created() {
-        this.$fixViewport();
-        linkapi.getLanguage(res => {
-            this.i18n = this.$window[res];
-        });
-    },
-    mounted() {
-        var that = this
-        this.channel.onmessage = event => {
-            if (event.data.action === "RefreshData") {
-                this.getNewsData();
-            }
-        };
-        this.getStorage(function () {
-            that.getNewsData()
-        })
     }
 };
 </script>
@@ -239,6 +251,19 @@ export default {
 <style>
 .news-list {
     background-color: #fff;
+}
+
+.title {
+    justify-content: flex-start;
+    flex-direction: row;
+    align-content: center;
+    align-items: center;
+}
+
+.line {
+    width: 5px;
+    height: 36px;
+    margin-right: 12px;
 }
 
 .news-list-title {
