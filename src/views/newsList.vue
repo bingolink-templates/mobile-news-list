@@ -7,6 +7,7 @@
                     <span class="line" v-bind:style="{'background-color': themeColor}"></span>
                     <text class="c0 f30">{{i18n.new}}</text>
                 </div>
+                <text class="f24 c153 fw4 pl20 pt10 pb10" @click='newsMoreEvent()'>{{i18n.All}}</text>
             </div>
             <div v-if='isShow'>
                 <div v-if='newsList.length != 0'>
@@ -17,7 +18,7 @@
                             </div>
                             <div class='content-item-right flex-sb'>
                                 <text class="item-right-text lines2 f28 c0 fw4">{{item.title}}</text>
-                                <div class="flex"  v-bind:style="{'padding-top': $isIPad ? '10wx' : '20px'}">
+                                <div class="flex" v-bind:style="{'padding-top': $isIPad ? '10wx' : '20px'}">
                                     <div class="date-origin flex">
                                         <text class="f24 c9">{{item.time}}</text>
                                     </div>
@@ -56,9 +57,14 @@ export default {
             isShow: false,
             isError: true,
             themeColor: '',
+            ecode: ''
         };
     },
     methods: {
+        newsMoreEvent() {
+            // 打开应用的方式
+            link.launchLinkService(["[OpenApp] \n appCode=bingo_newsList"], (res) => { }, (err) => { });
+        },
         // 新闻列表
         newsListItemEvent(url) {
             if (url) {
@@ -148,10 +154,12 @@ export default {
         },
         getNewsData() {
             link.getServerConfigs([], params => {
+                let urlParams = this.resolveUrlParams(weex.config.bundleUrl)
                 linkapi.get({
                     url: params.comwidgetsUri + "/news/list",
                     data: {
-                        limit: 5
+                        limit: 5,
+                        eCode: urlParams.ecode ? urlParams.ecode : 'localhost'
                     }
                 }).then(res => {
                     this.isShow = true
@@ -217,6 +225,29 @@ export default {
             setTimeout(() => {
                 this.getComponentRect(_params)
             }, 1200)
+        },
+        resolveUrlParams(url) {
+            // let url = weex.config.bundleUrl;
+            if (!url) return {};
+            url = url + "";
+            var index = url.indexOf("?");
+            if (index > -1) {
+                url = url.substring(index + 1, url.length);
+            }
+            var pairs = url.split("&"),
+                params = {};
+            for (var i = 0; i < pairs.length; i++) {
+                var pair = pairs[i];
+                var indexEq = pair.indexOf("="),
+                    key = pair,
+                    value = null;
+                if (indexEq > 0) {
+                    key = pair.substring(0, indexEq);
+                    value = pair.substring(indexEq + 1, pair.length);
+                }
+                params[key] = value;
+            }
+            return params;
         }
     },
     created() {
@@ -247,6 +278,7 @@ export default {
 <style>
 .news-list {
     background-color: #fff;
+    padding-bottom: 10px;
 }
 
 .line {
@@ -256,6 +288,7 @@ export default {
 }
 
 .news-list-title {
+    height: 44wx;
     padding: 0 12wx;
     border-bottom: 1px solid #f2f2f2;
 }
@@ -292,7 +325,7 @@ export default {
 .nmarWx {
     margin: 9wx 11wx 5wx 12wx;
 }
-.nmarPx{
+.nmarPx {
     margin: 18px 22px 10px 24px;
 }
 </style>
