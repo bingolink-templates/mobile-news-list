@@ -57,13 +57,43 @@ export default {
             isShow: false,
             isError: true,
             themeColor: '',
-            ecode: ''
+            ecode: '',
+            urlParams: {}
         };
+    },
+    created() {
+        this.$fixViewport();
+        linkapi.getLanguage(res => {
+            this.i18n = this.$window[res];
+        });
+        linkapi.getThemeColor(res => {
+            this.themeColor = res.background_color;
+        })
+        this.$isIPad = this.$isIPad()
+        this.urlParams = this.resolveUrlParams(weex.config.bundleUrl)
+    },
+    mounted() {
+        var that = this
+        this.channel.onmessage = event => {
+            if (event.data.action === "RefreshData") {
+                this.getNewsData();
+            }
+        };
+        this.getStorage(function () {
+            that.getNewsData()
+        })
     },
     methods: {
         newsMoreEvent() {
+            let runApp = {
+                appCode: 'bingo_newsList',
+                data: {
+                    title: this.i18n.new
+                }
+            }
             // 打开应用的方式
-            link.launchLinkService(["[OpenApp] \n appCode=bingo_newsList"], (res) => { }, (err) => { });
+            linkapi.runApp(runApp)
+            // link.launchLinkService(["[OpenApp] \n appCode=bingo_newsList"], (res) => { }, (err) => { });
         },
         // 新闻列表
         newsListItemEvent(url) {
@@ -140,7 +170,9 @@ export default {
             }
         },
         getStorage(callback) {
-            storage.getItem('newListJLocalData', res => {
+            let pageId = this.urlParams.userId ? this.urlParams.userId : ''
+            let ecode = this.urlParams.ecode ? this.urlParams.ecode : 'localhost'
+            storage.getItem('newListJLocalData' + ecode + pageId, res => {
                 if (res.result == 'success') {
                     var data = JSON.parse(res.data)
                     this.isShow = true
@@ -179,7 +211,9 @@ export default {
                             }
                             this.newsList = newsArr;
                             this.broadcastWidgetHeight();
-                            storage.setItem('newListJLocalData', JSON.stringify(newsArr))
+                            let pageId = this.urlParams.userId ? this.urlParams.userId : ''
+                            let ecode = this.urlParams.ecode ? this.urlParams.ecode : 'localhost'
+                            storage.setItem('newListJLocalData' + ecode + pageId, JSON.stringify(newsArr))
                         } catch (error) {
                             this.error();
                         }
@@ -249,27 +283,6 @@ export default {
             }
             return params;
         }
-    },
-    created() {
-        this.$fixViewport();
-        linkapi.getLanguage(res => {
-            this.i18n = this.$window[res];
-        });
-        linkapi.getThemeColor(res => {
-            this.themeColor = res.background_color;
-        })
-        this.$isIPad = this.$isIPad()
-    },
-    mounted() {
-        var that = this
-        this.channel.onmessage = event => {
-            if (event.data.action === "RefreshData") {
-                this.getNewsData();
-            }
-        };
-        this.getStorage(function () {
-            that.getNewsData()
-        })
     }
 };
 </script>
