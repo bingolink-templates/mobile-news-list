@@ -56,7 +56,7 @@ export default {
                 icon: 'ion-chevron-left',
             },
             total: 10,
-            title: '集团要闻',
+            title: '品高快报',
             droploadStyle: {
                 backgroundColor: '#fff'
             },
@@ -95,14 +95,16 @@ export default {
             },
             hasLoading: true,
             hasRefresh: true,
-            pullUpMore: '上拉加载更多'
+            pullUpMore: '上拉加载更多',
+            urlParams: {}
         };
     },
     created() {
         this.$fixViewport();
+        this.urlParams = this.resolveUrlParams(weex.config.bundleUrl)
         linkapi.getLanguage(res => {
             this.i18n = this.$window[res];
-            this.title = this.$window[res].new
+            this.title = this.urlParams.title ? decodeURI(this.urlParams.title) : this.$window[res].new
             this.refreshTextMap = {
                 start: this.$window[res].start,
                 move: this.$window[res].move,
@@ -140,6 +142,29 @@ export default {
         back: function () {
             // 返回上一个页面
             this.$pop();
+        },
+        resolveUrlParams(url) {
+            // let url = weex.config.bundleUrl;
+            if (!url) return {};
+            url = url + "";
+            var index = url.indexOf("?");
+            if (index > -1) {
+                url = url.substring(index + 1, url.length);
+            }
+            var pairs = url.split("&"),
+                params = {};
+            for (var i = 0; i < pairs.length; i++) {
+                var pair = pairs[i];
+                var indexEq = pair.indexOf("="),
+                    key = pair,
+                    value = null;
+                if (indexEq > 0) {
+                    key = pair.substring(0, indexEq);
+                    value = pair.substring(indexEq + 1, pair.length);
+                }
+                params[key] = value;
+            }
+            return params;
         },
         // 新闻列表
         newsListItemEvent(url) {
@@ -268,7 +293,6 @@ export default {
             return url;
         },
         error() {
-            this.$alert(this.i18n.ErrorLoadData);
             this.newsList = []
             this.preLoading = false
         }

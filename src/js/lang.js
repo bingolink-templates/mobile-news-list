@@ -1,6 +1,6 @@
 module.exports = {
     "zh-cn": {
-        "new": '集团要闻',
+        "new": '品高快报',
         "NoneData": "暂无新闻",
         "ErrorLoadData": "加载失败",
         "start": "准备下拉",
@@ -15,7 +15,7 @@ module.exports = {
         "pullUpMore": '上拉加载更多'
     },
     "zh-hk": {
-        "new": '集团要聞',
+        "new": '品高快报',
         "NoneData": "暫無新聞",
         "ErrorLoadData": "加載失敗",
         "start": "準備下拉",
@@ -30,7 +30,7 @@ module.exports = {
         "pullUpMore": '上拉加載更多'
     },
     "en": {
-        "new": 'Group News',
+        "new": 'Bingo News',
         "NoneData": "No data",
         "ErrorLoadData": "loading failed",
         "start": "Ready to pull down",
