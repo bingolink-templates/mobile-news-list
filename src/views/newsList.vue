@@ -294,7 +294,6 @@ export default {
         },
         error() {
             this.newsList = []
-            this.preLoading = false
         }
     }
 };
