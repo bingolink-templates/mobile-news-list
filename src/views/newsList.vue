@@ -17,8 +17,9 @@
                                 <bui-image @click='newsListItemEvent(item.action)' placeholder='/image/ellipsis.png' :src="item.image" radius='10' width="200px" height="73wx"></bui-image>
                             </div>
                             <div class='content-item-right flex-sb'>
-                                <text class="item-right-text lines2 f28 c0 fw4">{{item.title}}</text>
-                                <div class="flex" v-bind:style="{'padding-top': $isIPad ? '10wx' : '20px'}">
+                                <text class="lines2 f28 c0 fw4">{{item.title}}</text>
+                                <text class="lines1 f26 c9 fw4">{{item.brief}}</text>
+                                <div class="flex">
                                     <div class="date-origin flex">
                                         <text class="f24 c9">{{item.time}}</text>
                                     </div>
@@ -33,7 +34,6 @@
                 </div>
                 <div class="no-content flex-ac flex-jc" v-bind:style="{'height': $isIPad ? '200wx': '400px'}" v-else>
                     <div class="flex-dr">
-                        <bui-image src="/image/nodata.png" width="20wx" height="20wx"></bui-image>
                         <text class="f26 c51 fw4 pl15 center-height">{{isError?i18n.NoneData:i18n.ErrorLoadData}}</text>
                     </div>
                 </div>
@@ -172,7 +172,7 @@ export default {
         getStorage(callback) {
             let pageId = this.urlParams.userId ? this.urlParams.userId : ''
             let ecode = this.urlParams.ecode ? this.urlParams.ecode : 'localhost'
-            storage.getItem('newListJLocalData' + ecode + pageId, res => {
+            storage.getItem('newListJLocalData202062' + ecode + pageId, res => {
                 if (res.result == 'success') {
                     var data = JSON.parse(res.data)
                     this.isShow = true
@@ -204,6 +204,7 @@ export default {
                                 let newsItemObj = {};
                                 let action = this.getAction(element.action)
                                 newsItemObj["action"] = action
+                                newsItemObj["brief"] = element.brief
                                 newsItemObj["title"] = element.title;
                                 newsItemObj["time"] = this.timestampToTime(element.publishTime);
                                 newsItemObj["image"] = this.parseImgUrl(element.image, params.uamUri || params.uamUrl);
@@ -213,7 +214,7 @@ export default {
                             this.broadcastWidgetHeight();
                             let pageId = this.urlParams.userId ? this.urlParams.userId : ''
                             let ecode = this.urlParams.ecode ? this.urlParams.ecode : 'localhost'
-                            storage.setItem('newListJLocalData' + ecode + pageId, JSON.stringify(newsArr))
+                            storage.setItem('newListJLocalData202062' + ecode + pageId, JSON.stringify(newsArr))
                         } catch (error) {
                             this.error();
                         }
@@ -311,14 +312,10 @@ export default {
 }
 
 .content-item-right {
+    position: relative;
     margin-left: 10wx;
     flex: 1;
     flex-direction: column;
-}
-
-.item-right-text {
-    flex: 1;
-    color: rgb(165, 164, 164);
 }
 
 .date-origin {
