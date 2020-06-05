@@ -44,7 +44,9 @@ const link = weex.requireModule("LinkModule");
 const linkapi = require("linkapi");
 const dom = weex.requireModule("dom");
 const storage = weex.requireModule('storage');
-var storeFileIdUiDownload = '/store/getFile?fileId=${id}';
+const globalEvent = weex.requireModule('globalEvent');
+const navigator = weex.requireModule('navigator');
+var uamFileIdUiDownload = '/ui/download?fileId=${id}&access=anonymous';
 export default {
     data() {
         return {
@@ -118,6 +120,9 @@ export default {
                 fail: this.$window[res].loadMoreFail
             }
             this.pullUpMore = this.$window[res].pullUpMore
+        });
+        globalEvent.addEventListener("androidback", function (e) {
+            navigator.close()
         });
     },
     mounted() {
@@ -261,7 +266,7 @@ export default {
                                 newsItemObj["action"] = action
                                 newsItemObj["title"] = element.title;
                                 newsItemObj["time"] = this.timestampToTime(element.publishTime);
-                                newsItemObj["image"] = this.parseImgUrl(element.image, params.storeUri || params.storeUrl);
+                                newsItemObj["image"] = this.parseImgUrl(element.image, params.uamUri || params.uamUrl);
                                 newsArr.push(newsItemObj);
                             }
                             newsArr.push({
@@ -289,7 +294,7 @@ export default {
             if (url.startsWith("store://")) {
                 url = url.replace("store://", "");
             }
-            url = (uam + storeFileIdUiDownload).replace('${id}', url);
+            url = (uam + uamFileIdUiDownload).replace('${id}', url);
             return url;
         },
         error() {
