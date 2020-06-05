@@ -18,7 +18,7 @@
                             </div>
                             <div class='content-item-right flex-sb'>
                                 <text class="lines2 f28 c0 fw4">{{item.title}}</text>
-                                <text class="lines1 f26 c9 fw4">{{item.brief}}</text>
+                                <text class="lines1 f26 c9 fw4" v-if='item.brief'>{{item.brief}}</text>
                                 <div class="flex">
                                     <div class="date-origin flex">
                                         <text class="f24 c9">{{item.time}}</text>
@@ -204,7 +204,7 @@ export default {
                                 let newsItemObj = {};
                                 let action = this.getAction(element.action)
                                 newsItemObj["action"] = action
-                                newsItemObj["brief"] = element.brief
+                                newsItemObj["brief"] = element.brief || ''
                                 newsItemObj["title"] = element.title;
                                 newsItemObj["time"] = this.timestampToTime(element.publishTime);
                                 newsItemObj["image"] = this.parseImgUrl(element.image, params.uamUri || params.uamUrl);
