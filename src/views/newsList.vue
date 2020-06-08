@@ -79,9 +79,9 @@ export default {
                 this.getNewsData();
             }
         };
-        this.getStorage(function () {
             that.getNewsData()
-        })
+        // this.getStorage(function () {
+        // })
     },
     methods: {
         newsMoreEvent() {
@@ -191,7 +191,7 @@ export default {
                     url: params.comwidgetsUri + "/news/list",
                     data: {
                         limit: 5,
-                        eCode: urlParams.ecode ? urlParams.ecode : 'localhost'
+                        // eCode: urlParams.ecode ? urlParams.ecode : 'localhost'
                     }
                 }).then(res => {
                     this.isShow = true
@@ -327,10 +327,10 @@ export default {
 }
 
 .marWx {
-    margin: 6wx 5wx 6wx 5wx;
+    margin: 6wx 10wx 6wx 12wx;
 }
 .marPx {
-    margin: 12px 10px 12px 10px;
+    margin: 12px 20px 12px 24px;
 }
 .nmarWx {
     margin: 9wx 11wx 5wx 12wx;
