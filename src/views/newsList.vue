@@ -11,15 +11,15 @@
             </div>
             <div v-if='isShow'>
                 <div v-if='newsList.length != 0'>
-                    <div v-for="(item,index) in newsList" :key='index' @click='newsListItemEvent(item.action)'>
+                    <div :class="[index == newsList.length - 1 ? '' : 'bt']" v-for="(item,index) in newsList" :key='index' @click='newsListItemEvent(item.action)'>
                         <div class="flex-dr" v-if='item.image !=""' :class="[ $isIPad ? 'marWx' : 'marPx']">
                             <div class='content-item-left'>
                                 <bui-image @click='newsListItemEvent(item.action)' placeholder='/image/ellipsis.png' :src="item.image" radius='10' width="200px" height="73wx"></bui-image>
                             </div>
-                            <div class='content-item-right flex-sb'>
-                                <text class="lines2 f28 c0 fw4">{{item.title}}</text>
+                            <div class='content-item-right'>
+                                <text class="lines2 f30 c0 fw4 mb10">{{item.title}}</text>
                                 <text class="lines1 f26 c9 fw4" v-if='item.brief'>{{item.brief}}</text>
-                                <div class="flex">
+                                <div class="flex content-time">
                                     <div class="date-origin flex">
                                         <text class="f24 c9">{{item.time}}</text>
                                     </div>
@@ -47,6 +47,8 @@ const link = weex.requireModule("LinkModule");
 const linkapi = require("linkapi");
 const dom = weex.requireModule("dom");
 const storage = weex.requireModule('storage');
+const globalEvent = weex.requireModule('globalEvent');
+const navigator = weex.requireModule('navigator');
 var uamFileIdUiDownload = '/ui/download?fileId=${id}&access=anonymous';
 export default {
     data() {
@@ -79,9 +81,12 @@ export default {
                 this.getNewsData();
             }
         };
+        this.getStorage(function () {
             that.getNewsData()
-        // this.getStorage(function () {
-        // })
+        })
+        globalEvent.addEventListener("androidback", function (e) {
+            navigator.close()
+        });
     },
     methods: {
         newsMoreEvent() {
@@ -172,7 +177,7 @@ export default {
         getStorage(callback) {
             let pageId = this.urlParams.userId ? this.urlParams.userId : ''
             let ecode = this.urlParams.ecode ? this.urlParams.ecode : 'localhost'
-            storage.getItem('newListJLocalData202062' + ecode + pageId, res => {
+            storage.getItem('newListJLocalData2020713' + ecode + pageId, res => {
                 if (res.result == 'success') {
                     var data = JSON.parse(res.data)
                     this.isShow = true
@@ -214,7 +219,7 @@ export default {
                             this.broadcastWidgetHeight();
                             let pageId = this.urlParams.userId ? this.urlParams.userId : ''
                             let ecode = this.urlParams.ecode ? this.urlParams.ecode : 'localhost'
-                            storage.setItem('newListJLocalData202062' + ecode + pageId, JSON.stringify(newsArr))
+                            storage.setItem('newListJLocalData2020713' + ecode + pageId, JSON.stringify(newsArr))
                         } catch (error) {
                             this.error();
                         }
@@ -318,6 +323,12 @@ export default {
     flex-direction: column;
 }
 
+.content-time {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+}
+
 .date-origin {
     width: 200px;
 }
@@ -330,7 +341,7 @@ export default {
     margin: 6wx 10wx 6wx 12wx;
 }
 .marPx {
-    margin: 12px 20px 12px 24px;
+    margin: 20px 20px 20px 24px;
 }
 .nmarWx {
     margin: 9wx 11wx 5wx 12wx;
