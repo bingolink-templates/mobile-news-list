@@ -17,8 +17,8 @@
                                 <bui-image @click='newsListItemEvent(item.action)' placeholder='/image/ellipsis.png' :src="item.image" radius='10' width="200px" height="73wx"></bui-image>
                             </div>
                             <div class='content-item-right'>
-                                <text class="lines2 f30 c0 fw4 mb10">{{item.title}}</text>
-                                <text class="lines1 f26 c9 fw4" v-if='item.brief'>{{item.brief}}</text>
+                                <text class="lines1 f30 c0 fw4 mb10">{{item.title}}</text>
+                                <text class="lines2 f26 c9 fw4" v-if='item.brief'>{{item.brief}}</text>
                                 <div class="flex content-time">
                                     <div class="date-origin flex">
                                         <text class="f24 c9">{{item.time}}</text>
@@ -325,7 +325,7 @@ export default {
 
 .content-time {
     position: absolute;
-    bottom: 0;
+    bottom: -2wx;
     left: 0;
 }
 
