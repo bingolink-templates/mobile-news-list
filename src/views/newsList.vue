@@ -12,9 +12,9 @@
             <div v-if='isShow'>
                 <div v-if='newsList.length != 0'>
                     <div :class="[index == newsList.length - 1 ? '' : 'bt']" v-for="(item,index) in newsList" :key='index' @click='newsListItemEvent(item.action)'>
-                        <div class="flex-dr" v-if='item.image !=""' :class="[ $isIPad ? 'marWx' : 'marPx']">
+                        <div class="flex-dr" v-if='index == 0' :class="[ $isIPad ? 'marWx' : 'marPx']">
                             <div class='content-item-left'>
-                                <bui-image @click='newsListItemEvent(item.action)' placeholder='/image/ellipsis.png' :src="item.image" radius='10' width="200px" height="73wx"></bui-image>
+                                <bui-image @click='newsListItemEvent(item.action)' placeholder='/image/ellipsis.png' :src="item.image" radius='10' width="250px" height="84wx"></bui-image>
                             </div>
                             <div class='content-item-right'>
                                 <text class="lines2 f30 c0 fw4 mb10">{{item.title}}</text>
@@ -26,9 +26,9 @@
                                 </div>
                             </div>
                         </div>
-                        <div v-if='item.image ==""' class="flex-sb flex-dr flex-ac" v-bind:style="{'height': $isIPad ? '40wx' : '80px'}" :class="[ $isIPad ? 'nmarWx' : 'nmarPx']">
-                            <text class="f28 fw5 c0 lines1 flex10">{{item.title}}</text>
-                            <text class="f24 c9 flex2 tr">{{item.time}}</text>
+                        <div v-else class="flex-sb flex-ac flex" v-bind:style="{'height': $isIPad ? '30wx' : '60px'}" :class="[ $isIPad ? 'nmarWx' : 'nmarPx']">
+                            <text class="content-title f30 c0 lines1">{{item.title}}</text>
+                            <text class="f24 c9">{{item.time}}</text>
                         </div>
                     </div>
                 </div>
@@ -115,7 +115,7 @@ export default {
                 (date.getMonth() + 1 < 10
                     ? "0" + (date.getMonth() + 1)
                     : date.getMonth() + 1) + "-";
-            var D = date.getDate() + " ";
+            var D = (date.getDate() < 10 ? "0" + date.getDate() : date.getDate() + "");
             var h = date.getHours() + ":";
             var m = date.getMinutes() + ":";
             var s = date.getSeconds();
@@ -313,7 +313,7 @@ export default {
 }
 
 .content-item-left {
-    width: 200px;
+    width: 250px;
 }
 
 .content-item-right {
@@ -348,5 +348,8 @@ export default {
 }
 .nmarPx {
     margin: 18px 22px 10px 24px;
+}
+.content-title {
+    width: 620px;
 }
 </style>
