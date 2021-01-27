@@ -79,9 +79,9 @@ export default {
                 this.getNewsData();
             }
         };
+        this.getStorage(function () {
             that.getNewsData()
-        // this.getStorage(function () {
-        // })
+        })
     },
     methods: {
         newsMoreEvent() {
